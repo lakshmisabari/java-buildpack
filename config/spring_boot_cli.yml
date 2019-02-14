@@ -17,5 +17,9 @@
 # Note that the repository is shared with the Play Auto Reconfiguration framework and should be kept in step to
 # avoid conflicts.
 ---
+<<<<<<< HEAD
+version: 1.5.3_RELEASE
+=======
 version: 2.+
+>>>>>>> master
 repository_root: "{default.repository.root}/spring-boot-cli"

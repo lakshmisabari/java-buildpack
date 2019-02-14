@@ -15,5 +15,11 @@
 
 # Configuration for the JaCoco Agent framework
 ---
+<<<<<<< HEAD:config/play_framework_jpa_plugin.yml
+version: 1.10.0_RELEASE
+repository_root: "{default.repository.root}/play-jpa-plugin"
+enabled: true
+=======
 version: 0.+
 repository_root: "{default.repository.root}/jacoco"
+>>>>>>> master:config/jacoco_agent.yml

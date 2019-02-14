@@ -15,5 +15,9 @@
 
 # Configuration for the MariaDB JDBC framework
 ---
+<<<<<<< HEAD
+version: 1.5.9
+=======
 version: 2.+
+>>>>>>> master
 repository_root: "{default.repository.root}/mariadb-jdbc"
