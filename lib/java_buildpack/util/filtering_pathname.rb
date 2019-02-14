@@ -1,6 +1,7 @@
-# Encoding: utf-8
+# frozen_string_literal: true
+
 # Cloud Foundry Java Buildpack
-# Copyright 2013-2017 the original author or authors.
+# Copyright 2013-2019 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -142,14 +143,14 @@ module JavaBuildpack
         end
       end
 
-      attr_reader :pathname
+      protected
 
-      protected :pathname
+      attr_reader :pathname
 
       private
 
-      MUTATORS = [:chmod, :chown, :delete, :lchmod, :lchown, :make_link, :make_symlink, :mkdir, :mkpath, :rename,
-                  :rmdir, :rmtree, :taint, :unlink, :untaint].to_set.freeze
+      MUTATORS = %i[chmod chown delete lchmod lchown make_link make_symlink mkdir mkpath rename rmdir rmtree taint
+                    unlink untaint].to_set.freeze
 
       private_constant :MUTATORS
 
@@ -223,6 +224,7 @@ module JavaBuildpack
 
       def filter(pathname)
         raise 'Non-absolute pathname' unless pathname.absolute?
+
         @filter.call(pathname.cleanpath)
       end
 

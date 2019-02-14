@@ -1,6 +1,7 @@
-# Encoding: utf-8
+# frozen_string_literal: true
+
 # Cloud Foundry Java Buildpack
-# Copyright 2013-2017 the original author or authors.
+# Copyright 2013-2019 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +20,7 @@ require 'droplet_helper'
 require 'java_buildpack/component/additional_libraries'
 
 describe JavaBuildpack::Component::AdditionalLibraries do
-  include_context 'droplet_helper'
+  include_context 'with droplet help'
 
   context do
 
@@ -46,7 +47,7 @@ describe JavaBuildpack::Component::AdditionalLibraries do
 
   it 'renders empty string if classpath is empty' do
     additional_libraries.clear
-    expect(additional_libraries.as_classpath).not_to be
+    expect(additional_libraries.as_classpath).not_to be_truthy
   end
 
   it 'symbolically links additional libraries' do

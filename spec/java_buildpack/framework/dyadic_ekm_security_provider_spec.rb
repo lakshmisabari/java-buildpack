@@ -1,6 +1,7 @@
-# Encoding: utf-8
+# frozen_string_literal: true
+
 # Cloud Foundry Java Buildpack
-# Copyright 2013-2017 the original author or authors.
+# Copyright 2013-2019 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +20,7 @@ require 'component_helper'
 require 'java_buildpack/framework/dyadic_ekm_security_provider'
 
 describe JavaBuildpack::Framework::DyadicEkmSecurityProvider do
-  include_context 'component_helper'
+  include_context 'with component help'
 
   it 'does not detect without dyadic-n/a service' do
     expect(component.detect).to be_nil
@@ -34,26 +35,18 @@ describe JavaBuildpack::Framework::DyadicEkmSecurityProvider do
 
       allow(services).to receive(:find_service).and_return(
         'credentials' => {
-          'ca'           => "-----BEGIN CERTIFICATE-----\ntest-client-cert\n-----END CERTIFICATE-----",
-          'key'          => "-----BEGIN RSA PRIVATE KEY-----\ntest-client-private-key\n-----END RSA PRIVATE KEY-----",
+          'ca' => "-----BEGIN CERTIFICATE-----\ntest-client-cert\n-----END CERTIFICATE-----",
+          'key' => "-----BEGIN RSA PRIVATE KEY-----\ntest-client-private-key\n-----END RSA PRIVATE KEY-----",
           'recv_timeout' => 1,
-          'retries'      => 2,
+          'retries' => 2,
           'send_timeout' => 3,
-          'servers'      => 'server-1,server-2'
+          'servers' => 'server-1,server-2'
         }
       )
     end
 
     it 'detects with dyadic-n/a service' do
       expect(component.detect).to eq("dyadic-ekm-security-provider=#{version}")
-    end
-
-    it 'copies resources',
-       cache_fixture: 'stub-dyadic-ekm-security-provider.tar.gz' do
-
-      component.compile
-
-      expect(sandbox + 'java.security').to exist
     end
 
     it 'unpacks the dyadic tar',
@@ -95,12 +88,50 @@ describe JavaBuildpack::Framework::DyadicEkmSecurityProvider do
                                                'dyadic_ekm_security_provider/usr/lib')
     end
 
-    it 'updates JAVA_OPTS' do
+    it 'adds security provider',
+       cache_fixture: 'stub-dyadic-ekm-security-provider.tar.gz' do
+
+      component.compile
+
+      expect(security_providers.last).to eq('com.dyadicsec.provider.DYCryptoProvider')
+    end
+
+    it 'adds extension directory' do
       component.release
-      expect(java_opts).to include('-Djava.ext.dirs=$PWD/.test-java-home/lib/ext:$PWD/.java-buildpack/' \
-                                   'dyadic_ekm_security_provider/ext')
-      expect(java_opts).to include('-Djava.security.properties=$PWD/.java-buildpack/' \
-                                   'dyadic_ekm_security_provider/java.security')
+
+      expect(extension_directories).to include(droplet.sandbox + 'ext')
+    end
+
+    context do
+
+      let(:java_home_delegate) do
+        delegate = JavaBuildpack::Component::MutableJavaHome.new
+        delegate.root = app_dir + '.test-java-home'
+        delegate.version = JavaBuildpack::Util::TokenizedVersion.new('9.0.0')
+
+        delegate
+      end
+
+      it 'adds JAR to classpath during compile in Java 9',
+         cache_fixture: 'stub-dyadic-ekm-security-provider.tar.gz' do
+
+        component.compile
+
+        expect(root_libraries).to include(droplet.sandbox + 'usr/lib/dsm/dsm-advapi-1.0.jar')
+      end
+
+      it 'adds JAR to classpath during release in Java 9' do
+        component.release
+
+        expect(root_libraries).to include(droplet.sandbox + 'usr/lib/dsm/dsm-advapi-1.0.jar')
+      end
+
+      it 'adds does not add extension directory in Java 9' do
+        component.release
+
+        expect(extension_directories).not_to include(droplet.sandbox + 'ext')
+      end
+
     end
 
     def check_file_contents(actual, expected)

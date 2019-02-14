@@ -1,6 +1,7 @@
-# Encoding: utf-8
+# frozen_string_literal: true
+
 # Cloud Foundry Java Buildpack
-# Copyright 2013-2017 the original author or authors.
+# Copyright 2013-2019 the original author or authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +18,7 @@
 require 'java_buildpack/logging/logger_factory'
 require 'java_buildpack/repository'
 require 'java_buildpack/repository/version_resolver'
-require 'java_buildpack/util/cache'
-require 'java_buildpack/util/cache/download_cache'
+require 'java_buildpack/util/cache/cache_factory'
 require 'java_buildpack/util/configuration_utils'
 require 'rbconfig'
 require 'yaml'
@@ -52,13 +52,14 @@ module JavaBuildpack
       def find_item(version)
         found_version = VersionResolver.resolve(version, @index.keys)
         raise "No version resolvable for '#{version}' in #{@index.keys.join(', ')}" if found_version.nil?
+
         uri = @index[found_version.to_s]
         [found_version, uri]
       end
 
       private
 
-      INDEX_PATH = '/index.yml'.freeze
+      INDEX_PATH = '/index.yml'
 
       private_constant :INDEX_PATH
 
@@ -67,8 +68,7 @@ module JavaBuildpack
       end
 
       def cache
-        JavaBuildpack::Util::Cache::DownloadCache.new(Pathname.new(Dir.tmpdir),
-                                                      JavaBuildpack::Util::Cache::CACHED_RESOURCES_DIRECTORY)
+        JavaBuildpack::Util::Cache::CacheFactory.create
       end
 
       def canonical(raw)
