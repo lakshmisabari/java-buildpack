@@ -15,10 +15,7 @@
 
 # Configuration for the JRebel framework
 ---
-<<<<<<< HEAD
-version: 7.0.7
-=======
+
 version: +
->>>>>>> master
 repository_root: https://dl.zeroturnaround.com/jrebel
 enabled: true
