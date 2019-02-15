@@ -14,10 +14,5 @@
 # limitations under the License.
 
 # AspectJ Weaver Agent configuration
----
-<<<<<<< HEAD:config/container_certificate_trust_store.yml
-version: 2.1.0_RELEASE
-repository_root: "{default.repository.root}/container-certificate-trust-store"
-=======
->>>>>>> master:config/aspectj_weaver_agent.yml
+
 enabled: true
