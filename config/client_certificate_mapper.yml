@@ -15,11 +15,7 @@
 
 # Container security provider configuration
 ---
-<<<<<<< HEAD:config/play_framework_auto_reconfiguration.yml
 version: 1.10.0_RELEASE
 repository_root: "{default.repository.root}/auto-reconfiguration"
 enabled: true
-=======
-version: 1.+
-repository_root: "{default.repository.root}/client-certificate-mapper"
->>>>>>> master:config/client_certificate_mapper.yml
+
